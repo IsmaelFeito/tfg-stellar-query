@@ -1,0 +1,68 @@
+# =========================
+# 🧠 GENERAL
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# 🔐 ENV / SECRETOS
+# =========================
+.env
+.env.*
+*.env
+
+# =========================
+# 🟢 NODE / REACT / VITE
+# =========================
+node_modules/
+dist/
+build/
+.vite/
+*.log
+
+# Vite
+vite.config.ts.timestamp-*
+
+# =========================
+# 🔵 JAVA / SPRING BOOT
+# =========================
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+logs/
+*.log
+
+# =========================
+# 🟣 IDEs
+# =========================
+# IntelliJ
+.idea/
+*.iml
+
+# VSCode
+.vscode/
+
+# =========================
+# 🟡 SISTEMA
+# =========================
+*.swp
+*.swo
+*~
+
+# =========================
+# 🔴 DOCKER
+# =========================
+docker-data/
+*.pid
+
+# =========================
+# ⚫ OS / LINUX
+# =========================
+.cache/
