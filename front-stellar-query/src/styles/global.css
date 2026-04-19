@@ -1,5 +1,78 @@
 @import "tailwindcss";
 
+/* =========================================================
+   TAILWIND v4 — @theme: colores, fuentes y espaciado custom
+   ========================================================= */
+@theme {
+  /* Colores custom del proyecto */
+  --color-space-900: #020813;
+  --color-space-800: #05101f;
+  --color-cyan-glow: #00d4ff;
+  --color-amber-glow: #ffb347;
+  --color-red-glow: #ff4444;
+  --color-green-glow: #00ff88;
+
+  /* Fuentes custom */
+  --font-display: 'Orbitron', monospace;
+  --font-mono: 'Share Tech Mono', 'Courier New', monospace;
+
+  /* Animaciones */
+  --animate-blink: blink 1s step-end infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-spin-slow: spin-slow 12s linear infinite;
+  --animate-pulse-slow: pulse-slow 3s ease-in-out infinite;
+  --animate-fadeDown: fadeDown 0.5s ease forwards;
+  --animate-fadeUp: fadeUp 0.5s ease forwards;
+  --animate-containerIn: containerIn 0.4s ease forwards;
+  --animate-critPulse: critPulse 1.5s ease-in-out infinite;
+  --animate-scan: scan 1.5s linear forwards;
+
+  /* Keyframes */
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-10px); }
+  }
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes containerIn {
+    from { opacity: 0; transform: scale(0.97) translateY(10px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0); }
+  }
+  @keyframes critPulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px #ff4444; }
+    50%       { opacity: 0.6; box-shadow: 0 0 20px #ff4444; }
+  }
+  @keyframes scan {
+    from { top: -2px; }
+    to   { top: 100%; }
+  }
+  @keyframes dotBounce {
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50%       { transform: translateY(-4px); opacity: 1; }
+  }
+}
+
+/* =========================================================
+   BASE STYLES
+   ========================================================= */
 :root {
   --space-900: #020813;
   --cyan-glow:  #00d4ff;
@@ -12,11 +85,18 @@
 html { scroll-behavior: smooth; }
 
 body {
+  margin: 0;
   background-color: var(--space-900);
   color: #c8dde8;
   font-family: 'Share Tech Mono', 'Courier New', monospace;
   overflow-x: hidden;
   min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 ::selection { background: rgba(0,212,255,0.3); color: #fff; }
@@ -26,7 +106,9 @@ body {
 ::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.3); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(0,212,255,0.6); }
 
-/* Scanline overlay */
+/* =========================================================
+   OVERLAY EFFECTS
+   ========================================================= */
 .scanline-overlay {
   position: fixed; inset: 0; pointer-events: none; z-index: 9999;
   background: repeating-linear-gradient(
@@ -35,19 +117,22 @@ body {
   );
 }
 
-/* Noise overlay */
 .noise-overlay {
   position: fixed; inset: 0; opacity: 0.025; pointer-events: none; z-index: 9998;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
-/* Text glows */
+/* =========================================================
+   TEXT GLOWS
+   ========================================================= */
 .text-glow-cyan  { text-shadow: 0 0 10px rgba(0,212,255,0.8), 0 0 30px rgba(0,212,255,0.4); }
 .text-glow-amber { text-shadow: 0 0 10px rgba(255,179,71,0.8), 0 0 30px rgba(255,179,71,0.4); }
 .text-glow-green { text-shadow: 0 0 10px rgba(0,255,136,0.8), 0 0 30px rgba(0,255,136,0.4); }
 .text-glow-red   { text-shadow: 0 0 10px rgba(255,68,68,0.8),  0 0 30px rgba(255,68,68,0.4); }
 
-/* Input base */
+/* =========================================================
+   INPUT BASE
+   ========================================================= */
 .sq-input {
   background: rgba(2,8,19,0.9);
   border: 1px solid rgba(0,212,255,0.2);
@@ -66,7 +151,9 @@ body {
   box-shadow: 0 0 15px rgba(0,212,255,0.15);
 }
 
-/* Corner brackets */
+/* =========================================================
+   CORNER BRACKETS
+   ========================================================= */
 .corner-bracket { position: relative; }
 .corner-bracket::before,
 .corner-bracket::after {
@@ -77,7 +164,9 @@ body {
 .corner-bracket::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
 .corner-bracket::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
 
-/* SQ Button */
+/* =========================================================
+   SQ BUTTON
+   ========================================================= */
 .sq-btn {
   display: inline-flex; align-items: center; justify-content: center;
   font-family: 'Orbitron', monospace; font-weight: 700;
@@ -103,11 +192,13 @@ body {
 }
 .sq-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-/* Loading dots */
-@keyframes dotBounce {
-  0%,100% { transform: translateY(0); opacity: 0.4; }
-  50%      { transform: translateY(-4px); opacity: 1; }
+/* =========================================================
+   LOADING DOTS
+   ========================================================= */
+.loading-dot {
+  display: inline-block; width: 4px; height: 4px;
+  background: #00d4ff; border-radius: 50%;
+  animation: dotBounce 1s ease-in-out infinite;
 }
-.loading-dot { display: inline-block; width: 4px; height: 4px; background: #00d4ff; border-radius: 50%; animation: dotBounce 1s ease-in-out infinite; }
 .loading-dot:nth-child(2) { animation-delay: 0.15s; }
 .loading-dot:nth-child(3) { animation-delay: 0.3s; }
