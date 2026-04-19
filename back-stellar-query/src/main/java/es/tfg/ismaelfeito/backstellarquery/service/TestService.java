@@ -8,6 +8,8 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Scanner;
+
 @Service
 public class TestService {
 
@@ -19,15 +21,19 @@ public class TestService {
 
     @Autowired
     private JWTService jwtService;
-
+    public Scanner sc =  new Scanner(System.in);
     @PostConstruct
     public void testDatabases(){
 
         // USERS DB
         User user = new User();
-        user.setUsername("paco");
-        user.setPassword("1234");
-        user.setEmail("paco@email.com");
+        System.out.println("nombre: ");
+        String n = sc.nextLine();
+        user.setUsername(n);
+        user.setPassword("1234dcrtfvygbuhnjkml,fctvygbuhnijmok,");
+        System.out.printf("mail:");
+        String m = sc.nextLine();
+        user.setEmail(m);
         userRepository.save(user);
         String uname = user.getUsername();
         System.out.println("USERNAME adsfbgfwrabegds r\n\n\n\n\n"+uname+" "+user.getPassword());

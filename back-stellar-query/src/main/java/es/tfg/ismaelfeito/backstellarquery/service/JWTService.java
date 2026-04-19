@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
 public class JWTService {
 
 //    @Value("${jwt.secret}")
-    private String secret = "mysupersecretkeymysupersecretkey123";
+    private String secret = "my-super-secret-key-that-is-at-least-32-bytes!";
 
 //    @Value("${jwt.expiration}")
     private long expitarion = 3600000;
@@ -21,7 +22,7 @@ public class JWTService {
 
 
     private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public  String generateToken(String username){
