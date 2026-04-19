@@ -1,7 +1,7 @@
 -- Users login Table
 
 CREATE TABLE IF NOT EXISTS users (
-    id              SERIAL PRIMARY KEY,
+    id              BIGSERIAL PRIMARY KEY,
     username        VARCHAR(20) UNIQUE NOT NULL,
     email           VARCHAR(255) UNIQUE NOT NULL,
     password_hash   VARCHAR(255) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS sesiones (
-    id         SERIAL PRIMARY KEY,
+    id         BIGSERIAL PRIMARY KEY,
     usuario_id INTEGER      NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token      VARCHAR(255) UNIQUE NOT NULL
 );

@@ -3,7 +3,7 @@
 -- -- games tables for the user:
 
 -- CREATE TABLE IF NOT EXISTS crew_mates (
---     id          SERIAL PRIMARY KEY,
+--     id          BIGSERIAL PRIMARY KEY,
 --     name        VARCHAR(50) NOT NULL,
 --     range       INTEGER NOT NULL DEFAULT 1,
 --     state       VARCHAR(20) CHECK (state in ('activo', 'inactivo', 'herido')) DEFAULT 'activo',
@@ -13,18 +13,18 @@
 -- );
 
 -- CREATE TABLE ships (
---     id          SERIAL PRIMARY KEY,
+--     id          BIGSERIAL PRIMARY KEY,
 --     name        VARCHAR(100) NOT NULL,
 --     description VARCHAR(200)
 -- );
 
 -- CREATE TABLE departaments (
---     id      SERIAL PRIMARY KEY,
+--     id      BIGSERIAL PRIMARY KEY,
 --     dep_name    VARCHAR(100) NOT NULL
 -- );
 
 -- CREATE TABLE class (
---     id      SERIAL PRIMARY KEY,
+--     id      BIGSERIAL PRIMARY KEY,
 --     name    VARCHAR(50)
 -- );
 
@@ -36,7 +36,7 @@
 
 -- -- statements for users / misions
 -- CREATE TABLE misions (
---     id                  SERIAL PRIMARY KEY,
+--     id                  BIGSERIAL PRIMARY KEY,
 --     title               VARCHAR(200) NOT NULL,
 --     description_txt     TEXT NOT NULL,
 --     statement_txt       TEXT NOT NULL,        -- instrucción que ve el jugador
@@ -111,20 +111,20 @@
 
 -- Naves
 CREATE TABLE IF NOT EXISTS ships (
-    id          SERIAL PRIMARY KEY,
+    id          BIGSERIAL PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
     description VARCHAR(200)
 );
 
 -- Departamentos
 CREATE TABLE IF NOT EXISTS departaments (
-    id      SERIAL PRIMARY KEY,
+    id      BIGSERIAL PRIMARY KEY,
     dep_name    VARCHAR(100) NOT NULL
 );
 
 -- Tripulantes
 CREATE TABLE IF NOT EXISTS crew_mates (
-    id          SERIAL PRIMARY KEY,
+    id          BIGSERIAL PRIMARY KEY,
     name        VARCHAR(50) NOT NULL,
     range       INTEGER NOT NULL DEFAULT 1,
     state       VARCHAR(20) CHECK (state IN ('activo', 'inactivo', 'herido')) DEFAULT 'activo',
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS crew_mates (
 
 -- Clases de naves
 CREATE TABLE IF NOT EXISTS class (
-    id      SERIAL PRIMARY KEY,
+    id      BIGSERIAL PRIMARY KEY,
     name    VARCHAR(50)
 );
 
@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS ships_class (
 
 -- Misiones
 CREATE TABLE IF NOT EXISTS misions (
-    id                  SERIAL PRIMARY KEY,
+    id                  BIGSERIAL PRIMARY KEY,
     title               VARCHAR(200) NOT NULL,
     description_txt     TEXT NOT NULL,
     statement_txt       TEXT NOT NULL,
