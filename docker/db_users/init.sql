@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS users (
     last_login      TIMESTAMP   
 );
 
-CREATE TABLE sesiones (
+CREATE TABLE IF NOT EXISTS sesiones (
     id         SERIAL PRIMARY KEY,
-    usuario_id INTEGER     NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    usuario_id INTEGER      NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token      VARCHAR(255) UNIQUE NOT NULL
 );
 
