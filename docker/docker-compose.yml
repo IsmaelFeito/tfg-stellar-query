@@ -1,144 +1,68 @@
-# # version: '3.9'
-
-# services:
-
-# # DDBB USERS / login
-#   db_users:
-#     image: postgres:16-alpine
-#     container_name: sq_db_users
-#     restart: unless-stopped
-#     environment:
-#       POSTGRES_USER:      ${POSTGRES_USERS_USER}
-#       POSTGRES_PASSWORD:  ${POSTGRES_USERS_PASSWORD}
-#       POSTGRES_DB:        ${POSTGRES_USERS_DB}
-#     ports:
-#       - "5432:5432" # port_host(ub_server):port_container
-#     volumes:
-#       - sq_users_data:/var/lib/postgresql/data
-#       - ./db_users/init.sql:/docker-entrypoint-initdb.d/init.sql
-#     healthcheck:
-#       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERS_USER}"]
-#       interval: 10s
-#       timeout:   5s
-#       retries:  5
-
-
-# # DDBB GAME / sql game
-
-#   db_game:
-#     image: postgres:16-alpine
-#     container_name: sq_db_game
-#     restart: unless-stopped
-#     environment: 
-#       POSTGRES_USER:      ${POSTGRES_GAME_USER}
-#       POSTGRES_PASSWORD:  ${POSTGRES_GAME_PASSWORD}
-#       POSTGRES_DB:        ${POSTGRES_GAME_DB}
-#     ports: 
-#                     # choose a dif port for host to avoid collision
-#       - "5433:5432" # port_host(ub_server):port_container
-#     volumes:
-#       - sq_game_data:/var/lib/postgresql/data
-#       - ./db_game/init.sql:/docker-entrypoint-initdb.d/init.sql
-#     healthcheck:
-#       test: ["CMD-SHELL","pg_isready -U ${POSTGRES_GAME_USER}"]
-#       interval: 10s
-#       timeout:  5s
-#       retries:  5
-    
-# # # DDBB PLAYER
-
-# #   db_player:
-# #     image: postgres:16-alpine
-# #     container_name: sq_db_player
-# #     restart: unless-stopped
-# #     environment: 
-# #       POSTGRES_USER:      ${POSTGRES_PLAYER_USER}
-# #       POSTGRES_PASSWORD:  ${POSTGRES_PLAYER_PASSWORD}
-# #       POSTGRES_DB:        ${POSTGRES_PLAYER_DB}
-# #     ports: 
-# #                     # choose a dif port for host to avoid collision
-# #       - "5434:5432" # port_host(ub_server):port_container
-# #     volumes:
-# #       - sq_game_data:/var/lib/postgresql/data
-# #       - ./db_game/init.sql:/docker-entrypoint-initdb.d/init.sql
-# #     healthcheck:
-# #       test: ["CMD-SHELL","pg_isready -U ${POSTGRES_GAME_USER}"]
-# #       interval: 10s
-# #       timeout:  5s
-# #       retries:  5
-
-#   # pgAdmin web interface to manage the DDBBs
-
-#   pgadmin:
-#     image: dpage/pgadmin4:latest
-#     container_name: sq_pgadmin
-#     restart: unless-stopped
-#     environment:
-#       PGADMIN_DEFAULT_EMAIL:    ${PGADMIN_EMAIL}
-#       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
-#     ports:
-#       - "5050:80" # port_host(ub_server):port_container
-#     depends_on:
-#       - db_users
-#       - db_game
-#     volumes:
-#       - sq_pgadmin_data:/var/lib/pgadmin
-
-
-# # Persistent Volumes 
-# volumes:
-#   sq_users_data:
-#   sq_game_data:
-#   # sq_db_player:
-#   sq_pgadmin_data:
-
 version: '3.9'
 
 services:
 
+  # ─── Base de datos de usuarios / autenticación ────────────────────────────
   db_users:
     image: postgres:16-alpine
     container_name: sq_db_users
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USERS_USER}
+      POSTGRES_USER:     ${POSTGRES_USERS_USER}
       POSTGRES_PASSWORD: ${POSTGRES_USERS_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_USERS_DB}
+      POSTGRES_DB:       ${POSTGRES_USERS_DB}
     ports:
       - "5432:5432"
     volumes:
       - sq_users_data:/var/lib/postgresql/data
       - ./db_users/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERS_USER} -d ${POSTGRES_USERS_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
+  # ─── Base de datos del juego ──────────────────────────────────────────────
   db_game:
     image: postgres:16-alpine
     container_name: sq_db_game
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_GAME_USER}
+      POSTGRES_USER:     ${POSTGRES_GAME_USER}
       POSTGRES_PASSWORD: ${POSTGRES_GAME_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_GAME_DB}
+      POSTGRES_DB:       ${POSTGRES_GAME_DB}
     ports:
-      - "5433:5432"
+      - "5433:5432"       # host:5433 → container:5432
     volumes:
       - sq_game_data:/var/lib/postgresql/data
       - ./db_game/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_GAME_USER} -d ${POSTGRES_GAME_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
+  # ─── pgAdmin (interfaz web para gestionar ambas BBDs) ─────────────────────
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: sq_pgadmin
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_EMAIL:    ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     ports:
       - "5050:80"
     depends_on:
-      - db_users
-      - db_game
+      db_users:
+        condition: service_healthy
+      db_game:
+        condition: service_healthy
     volumes:
       - sq_pgadmin_data:/var/lib/pgadmin
 
+# ─── Volúmenes persistentes ────────────────────────────────────────────────
 volumes:
   sq_users_data:
   sq_game_data:

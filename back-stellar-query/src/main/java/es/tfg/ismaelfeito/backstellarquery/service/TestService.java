@@ -22,7 +22,7 @@ public class TestService {
     @Autowired
     private JWTService jwtService;
     public Scanner sc =  new Scanner(System.in);
-    @PostConstruct
+//    @PostConstruct
     public void testDatabases(){
 
         // USERS DB

@@ -16,13 +16,16 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    proxy: {
-      // Redirige /api/* al backend Spring Boot (puerto 8080 por defecto)
+    port: 5173,
+     proxy: {
+      // Todas las llamadas a /api desde el front se redirigen al backend
+      // El front usa baseURL: '/api' en api.ts → Vite lo reescribe a http://localhost:8080/api
       '/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
-        // Si el backend no tiene el prefijo /api, descomenta la siguiente línea:
-        // rewrite: (path) => path.replace(/^\/api/, ''),
+        // Si en algún momento quieres que el back escuche en /v1/api en vez de /api,
+        // descomenta esto para reescribir el prefijo:
+        // rewrite: (path) => path.replace(/^\/api/, '/v1/api'),
       },
     },
   },

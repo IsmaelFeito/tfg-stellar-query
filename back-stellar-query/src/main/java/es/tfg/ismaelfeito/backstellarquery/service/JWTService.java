@@ -1,6 +1,5 @@
 package es.tfg.ismaelfeito.backstellarquery.service;
 
-
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,53 +12,57 @@ import java.util.Date;
 @Service
 public class JWTService {
 
-//    @Value("${jwt.secret}")
-    private String secret = "my-super-secret-key-that-is-at-least-32-bytes!";
+    // Leídos desde application.properties — nunca hardcodeados en el código
+    @Value("${jwt.secret}")
+    private String secret;
 
-//    @Value("${jwt.expiration}")
-    private long expitarion = 3600000;
-
-
+    @Value("${jwt.expiration}")
+    private long expiration;  // FIX: era "expitarion" (typo)
 
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public  String generateToken(String username){
-        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
-
+    /**
+     * Genera un JWT firmado con HMAC-SHA256.
+     * El subject es el username del usuario.
+     * Expira según jwt.expiration (por defecto 1 hora = 3600000 ms).
+     */
+    public String generateToken(String username) {
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expitarion))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getKey())
                 .compact();
     }
 
-//    Extracts the body of the token where is the Users username
-//    Claims -> pairs key: value (7 standard types)
+    /**
+     * Parsea el token y devuelve sus Claims (payload).
+     * Lanza JwtException si la firma es inválida o el token está expirado.
+     */
     private Claims parseToken(String token) {
-        SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes());
-
-        return  Jwts.parser()
+        return Jwts.parser()
                 .verifyWith(getKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
 
-    public String extractUsername(String token){
+    /** Extrae el username (subject) del token. */
+    public String extractUsername(String token) {
         return parseToken(token).getSubject();
     }
 
-    public boolean isValid(String token){
+    /** Devuelve true si el token tiene firma válida y no ha expirado. */
+    public boolean isValid(String token) {
         try {
-            Claims claims = parseToken(token);
+            parseToken(token);
             return true;
-        } catch (ExpiredJwtException e){ //Expired Token
-            return false;
-        } catch (JwtException e){ //Invalid sign
-            return false;
+        } catch (ExpiredJwtException e) {
+            return false;   // token caducado
+        } catch (JwtException e) {
+            return false;   // firma inválida u otro problema
         }
     }
 }

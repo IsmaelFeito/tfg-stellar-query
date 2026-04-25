@@ -24,4 +24,4 @@ export const useAuthStore = create<AuthState>()(
     }),
     { name: 'sq-auth' }  // persiste en localStorage
   )
-)
+);

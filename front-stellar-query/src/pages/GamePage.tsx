@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import Layout from '../components/layout/Layout'
-import { gameService, QueryResponse } from '../services/gameService'
+import { gameService, type QueryResponse } from '../services/gameService'
 
 const SCHEMA = [
   { col: 'id', type: 'INT PK', pk: true },

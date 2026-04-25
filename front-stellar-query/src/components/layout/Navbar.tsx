@@ -1,11 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
-import { useAuthStore } from '../../store/authStore'
+import { useAuth } from '../../hooks/useAuth'
 
 interface Props { showNav?: boolean }
 
 export default function Navbar({ showNav = false }: Props) {
   const { pathname } = useLocation()
-  const { user, logout } = useAuthStore()
+  const { user, logout } = useAuth()
 
   const navLink = (to: string, label: string) => (
     <Link to={to} className={`text-[0.75rem] px-3 py-1.5 border tracking-widest transition-all duration-200 font-mono
