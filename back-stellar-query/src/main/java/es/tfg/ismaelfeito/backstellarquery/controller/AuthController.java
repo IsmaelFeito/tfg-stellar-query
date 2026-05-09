@@ -23,7 +23,7 @@ public class AuthController {
     @Autowired
     private JWTService jwtService;
 
-    // BCrypt para hashear contraseñas — NUNCA guardes contraseñas en texto plano
+    // BCrypt para hashear contraseñas — NUNCA guardar contraseñas en texto plano
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // ─── REGISTER ─────────────────────────────────────────────────────────────

@@ -1,0 +1,30 @@
+
+--Question - 1:
+SELECT name, state FROM crew_mates
+
+--Question - 2:
+SELECT * FROM crew_mates WHERE state = 'activo'
+
+--Question - 3: 
+SELECT name, range FROM crew_mates WHERE range > 3 ORDER BY range DESC
+
+--Question - 4:
+SELECT name, description FROM ships ORDER BY name ASC
+
+--Question - 5:
+SELECT name, state FROM crew_mates WHERE state = 'herido' OR state = 'inactivo'
+
+--Question: - 6:
+SELECT c.name, s.name as nave FROM crew_mates c INNER JOIN ships s ON c.id_ships = s.id WHERE s.name = 'Nebula-7'
+
+--Question - 7:
+SELECT d.dep_name, COUNT(c.id) as total FROM departaments d LEFT JOIN crew_mates c ON c.id_dept = d.id GROUP BY d.dep_name ORDER BY total DESC
+
+--Question - 8:
+SELECT c.name, s.name as nave, d.dep_name as departamento FROM crew_mates c JOIN ships s ON c.id_ships = s.id JOIN departaments d ON c.id_dept = d.id WHERE c.state = 'activo'
+
+--Question - 9:
+SELECT s.name as nave, COUNT(c.id) as activos FROM ships s JOIN crew_mates c ON c.id_ships = s.id WHERE c.state = 'activo' GROUP BY s.name HAVING COUNT(c.id) > 1
+
+--Question - 10:
+SELECT s.name as nave, c.name as comandante FROM crew_mates c JOIN ships s ON c.id_ships = s.id WHERE c.range = (SELECT MAX(c2.range) FROM crew_mates c2 WHERE c2.id_ships = c.id_ships)

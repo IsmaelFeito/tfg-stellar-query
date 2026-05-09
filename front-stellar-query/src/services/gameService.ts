@@ -1,6 +1,10 @@
 import api from './api'
 
+
+//misma lógica que authService.ts
 export interface QueryRequest  { query: string; misionId: number }
+
+// Define response de GameService de Java(back)
 export interface QueryResponse {
   success:   boolean
   rows?:     Record<string, unknown>[]

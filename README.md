@@ -30,7 +30,7 @@
         # REGISTRO DE USER:
         curl -s -X POST http://localhost:8080/api/auth/register \
         -H "Content-Type: application/json" \
-        -d '{"username":"testuser","email":"test@test.com","password":"123456"}' | jq
+        -d '{"username":"testuser","email":"test@test.com","password":"12345678"}' | jq
 
         # Respuesta esperada: 
         {
@@ -41,12 +41,12 @@
         #LOGIN:
         curl -s -X POST http://localhost:8080/api/auth/login \
         -H "Content-Type: application/json" \
-        -d '{"username":"testuser","password":"123456"}' | jq
+        -d '{"username":"testuser","password":"12345678"}' | jq
 
             #GUARDA TOKEN PA LOS SIGUIENTES TESTS:
                 TOKEN=$(curl -s -X POST http://localhost:8080/api/auth/login \
                     -H "Content-Type: application/json" \
-                    -d '{"username":"testuser","password":"123456"}' | jq -r '.token')
+                    -d '{"username":"testuser","password":"12345678"}' | jq -r '.token')
 
                 echo $TOKEN   # verifica que no está vacío
 

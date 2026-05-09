@@ -1,19 +1,27 @@
+// Axios: librería que hace peticiones HTTP
+
 import axios from 'axios'
 import { useAuthStore } from '../store/authStore'
 
 const api = axios.create({
-  baseURL: '/api',
-  headers: { 'Content-Type': 'application/json' },
+  baseURL: '/api', //base de la ruta de las llamadas de la api
+  headers: { 
+    'Content-Type': 'application/json' 
+  },
 })
 
-// Añade el token JWT a cada petición automáticamente
+// Interceptor de peticiones
+// Añade el JWT a cada petición automáticamente
 api.interceptors.request.use(config => {
   const token = useAuthStore.getState().token
-  if (token) config.headers.Authorization = `Bearer ${token}`
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
   return config
 })
 
-// Si el backend devuelve 401, cierra sesión
+// Interceptor de respuestas
+// Backend ret 401 => cierra sesión (token expired)
 api.interceptors.response.use(
   res => res,
   err => {

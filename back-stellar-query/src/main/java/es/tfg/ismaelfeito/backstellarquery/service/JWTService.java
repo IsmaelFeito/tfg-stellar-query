@@ -17,7 +17,7 @@ public class JWTService {
     private String secret;
 
     @Value("${jwt.expiration}")
-    private long expiration;  // FIX: era "expitarion" (typo)
+    private long expiration;
 
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));

@@ -120,30 +120,103 @@ INSERT INTO crew_mates (name, range, state, joined, id_ships, id_dept) VALUES
     ('Ren Okafor',  5, 'activo',   '2340-08-30', 2, 1),
     ('Mia Chen',    2, 'activo',   '2343-05-14', 4, 5);
 
-INSERT INTO misions (title, description_txt, statement_txt, query_correct, level, xp_reward, "order") VALUES
-    (
-        'Recuperar tripulantes activos',
-        'El sistema de personal ha perdido el registro de la tripulación activa. Necesitamos saber quiénes están operativos.',
-        'Obtén todos los datos de los tripulantes cuyo estado sea activo.',
-        'SELECT * FROM crew_mates WHERE state = ''activo''',
-        'basico', 100, 1
-    ),
-    (
-        'Oficiales de alto rango',
-        'Necesitamos identificar a los oficiales senior para liderar la reparación del reactor.',
-        'Obtén el nombre y rango de los tripulantes con rango mayor a 3, ordenados de mayor a menor rango.',
-        'SELECT name, range FROM crew_mates WHERE range > 3 ORDER BY range DESC',
-        'basico', 150, 2
-    ),
-    (
-        'Tripulantes de la Nebula-7',
-        'El manifiesto de la nave principal está corrupto. Necesitamos reconstruirlo.',
-        'Lista el nombre de cada tripulante junto con el nombre de su nave, solo para los de la Nebula-7.',
-        'SELECT c.name, s.name as nave FROM crew_mates c INNER JOIN ships s ON c.id_ships = s.id WHERE s.name = ''Nebula-7''',
-        'intermedio', 200, 3
-    );
 
+INSERT INTO misions (title, description_txt, statement_txt, query_correct, level, xp_reward, "order") VALUES
+ 
+-- ============================================================
+-- BASICO: SELECT simples, WHERE, ORDER BY
+-- ============================================================
+ 
+(
+    'Tripulación completa',
+    'Los registros de la flota están dispersos. Necesitamos un censo completo de toda la tripulación para comenzar la misión.',
+    'Obtén el nombre y estado de todos los tripulantes.',
+    'SELECT name, state FROM crew_mates',
+    'basico', 80, 1
+),
+(
+    'Tripulantes activos',
+    'Solo los tripulantes activos pueden participar en la misión de rescate. Identifícalos.',
+    'Obtén todos los datos de los tripulantes cuyo estado sea activo.',
+    'SELECT * FROM crew_mates WHERE state = ''activo''',
+    'basico', 100, 2
+),
+(
+    'Oficiales de alto rango',
+    'La reparación del reactor requiere oficiales experimentados. Necesitamos a los de mayor rango.',
+    'Obtén el nombre y rango de los tripulantes con rango mayor a 3, ordenados de mayor a menor rango.',
+    'SELECT name, range FROM crew_mates WHERE range > 3 ORDER BY range DESC',
+    'basico', 120, 3
+),
+(
+    'Naves de la flota',
+    'El mapa de navegación está corrupto. Recupera el inventario completo de naves disponibles.',
+    'Obtén el nombre y descripción de todas las naves, ordenadas alfabéticamente por nombre.',
+    'SELECT name, description FROM ships ORDER BY name ASC',
+    'basico', 100, 4
+),
+(
+    'Tripulantes heridos o inactivos',
+    'Necesitamos localizar al personal no operativo para evacuar a la enfermería.',
+    'Obtén el nombre y estado de los tripulantes cuyo estado sea herido o inactivo.',
+    'SELECT name, state FROM crew_mates WHERE state = ''herido'' OR state = ''inactivo''',
+    'basico', 120, 5
+),
+ 
+-- ============================================================
+-- INTERMEDIO: JOIN, GROUP BY, COUNT, funciones de agregación
+-- ============================================================
+ 
+(
+    'Tripulantes de la Nebula-7',
+    'El manifiesto de la nave principal está corrupto. Necesitamos saber quién va a bordo.',
+    'Lista el nombre de cada tripulante junto con el nombre de su nave, solo para los de la Nebula-7.',
+    'SELECT c.name, s.name as nave FROM crew_mates c INNER JOIN ships s ON c.id_ships = s.id WHERE s.name = ''Nebula-7''',
+    'intermedio', 180, 6
+),
+(
+    'Personal por departamento',
+    'El sistema de recursos humanos necesita un recuento de efectivos por área para asignar las tareas de reparación.',
+    'Obtén el nombre de cada departamento y el número de tripulantes que tiene, ordenado de mayor a menor.',
+    'SELECT d.dep_name, COUNT(c.id) as total FROM departaments d LEFT JOIN crew_mates c ON c.id_dept = d.id GROUP BY d.dep_name ORDER BY total DESC',
+    'intermedio', 200, 7
+),
+(
+    'Nave y departamento de cada tripulante',
+    'El coordinador de la misión necesita saber en qué nave y área trabaja cada miembro activo de la tripulación.',
+    'Lista el nombre del tripulante, el nombre de su nave y el nombre de su departamento, solo para tripulantes activos.',
+    'SELECT c.name, s.name as nave, d.dep_name as departamento FROM crew_mates c JOIN ships s ON c.id_ships = s.id JOIN departaments d ON c.id_dept = d.id WHERE c.state = ''activo''',
+    'intermedio', 220, 8
+),
+ 
+-- ============================================================
+-- AVANZADO: subconsultas, HAVING, agregaciones complejas
+-- ============================================================
+ 
+(
+    'Naves con más de un tripulante activo',
+    'Solo las naves con suficiente personal operativo pueden ser despachadas. Identifica cuáles están listas.',
+    'Obtén el nombre de las naves que tienen más de 1 tripulante en estado activo, junto con el recuento.',
+    'SELECT s.name as nave, COUNT(c.id) as activos FROM ships s JOIN crew_mates c ON c.id_ships = s.id WHERE c.state = ''activo'' GROUP BY s.name HAVING COUNT(c.id) > 1',
+    'avanzado', 280, 9
+),
+(
+    'El oficial de mayor rango por nave',
+    'Cada nave necesita un comandante. Identifica al tripulante de mayor rango en cada nave.',
+    'Obtén el nombre de la nave y el nombre del tripulante con mayor rango en esa nave.',
+    'SELECT s.name as nave, c.name as comandante FROM crew_mates c JOIN ships s ON c.id_ships = s.id WHERE c.range = (SELECT MAX(c2.range) FROM crew_mates c2 WHERE c2.id_ships = c.id_ships)',
+    'avanzado', 320, 10
+);
+ 
+-- Configuración de validación para las 10 misiones
 INSERT INTO misions_config (mision_id, orden_importa, columnas_exactas) VALUES
     (1, FALSE, TRUE),
-    (2, TRUE,  TRUE),
-    (3, FALSE, TRUE);
+    (2, FALSE, TRUE),
+    (3, TRUE,  TRUE),
+    (4, TRUE,  TRUE),
+    (5, FALSE, TRUE),
+    (6, FALSE, TRUE),
+    (7, TRUE,  TRUE),
+    (8, FALSE, TRUE),
+    (9, TRUE,  TRUE),
+    (10, FALSE, TRUE);
